@@ -204,8 +204,9 @@
                 }
             },
             "header": {
-                "chat": "Chat",
+                "chat": "Chatbot",
                 "readme": "Readme"
+                
             }
         }
     },

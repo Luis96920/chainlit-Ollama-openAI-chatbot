@@ -16,43 +16,48 @@ async def chat_profile():
 
     return [
         cl.ChatProfile(
-            name="GPT-3.5 via OpenAI on remote",
+            name="GPT-3.5 on OpenAI remote",
             markdown_description="The underlying large language model model is **GPT-3.5**.",
             # icon="https://picsum.photos/200",
         ),
         cl.ChatProfile(
-            name="GPT-4 via OpenAI on remote",
+            name="GPT-4 on OpenAI remote",
             markdown_description="The underlying large language model model is **GPT-4**.",
             # icon="https://picsum.photos/250",
         ),
         cl.ChatProfile(
-            name="Mixtral-8x7b via Groq on remote",
+            name="Mixtral-8x7b on Groq remote",
             markdown_description="The underlying large language model model is **Mixtral-8x7b**.",
             # icon="https://picsum.photos/200",
         ),
         cl.ChatProfile(
-            name="Gemma-7b via Groq on remote",
+            name="Gemma-7b on Groq remote",
             markdown_description="The underlying large language model model is **Gemma-7b**.",
             # icon="https://picsum.photos/250",
         ),
         cl.ChatProfile(
-            name="Llama3-8b via Groq on remote",
+            name="Llama3-8b on Groq remote",
             markdown_description="The underlying large language model model is **Llama3-8b**.",
             # icon="https://picsum.photos/200",
         ),
         cl.ChatProfile(
-            name="Llama3 via Ollama on local",
+            name="Llama3 on local",
             markdown_description="The underlying large language model model is **Llama3-8b quantization 4-bit**.",
             # icon="https://picsum.photos/200",
         ),
         cl.ChatProfile(
-            name="Gemma via Ollama on local",
+            name="Gemma on local",
             markdown_description="The underlying large language model model is **Gemma 9B quantization 4-bit**.",
             # icon="https://picsum.photos/200",
         ),
         cl.ChatProfile(
-            name="CodeGemma via Ollama on local",
+            name="CodeGemma on local",
             markdown_description="The underlying large language model model is **Gemma 9B** tuned for coding assistance with quantization 4-bit.",
+            # icon="https://picsum.photos/200",
+        ),
+        cl.ChatProfile(
+            name="Deepseek-coder on local",
+            markdown_description="The underlying large language model model is **deepseek-coder 1B** for coding assistance with quantization 4-bit.",
             # icon="https://picsum.photos/200",
         ),
     ]
@@ -76,7 +81,7 @@ async def on_chatstart():
         apikey_html = "https://console.groq.com/keys"
 
     await cl.Message(
-        content=f"To chat with the large language model **{model_selected.split()[0]}** via {model_selected.split()[2]}, type your query in below textbox. Please make sure you have proper **[{vendor_name}]({apikey_html})** API key set in .env file."
+        content=f"To chat with the large language model **{model_selected.split()[0]}** via {model_selected.split()[2]}, type your query in below textbox. Please make sure you have proper **[{vendor_name}]({apikey_html})** API key set in .env file or have conresponding binary file of models downloaded."
     ).send()
 
     # Setting up the large language model
@@ -101,6 +106,9 @@ async def on_chatstart():
         elif 'codegemma' in model_selected.lower():
             # 5.0GB
             model = Ollama(model="codegemma")
+        elif 'deepseek-coder' in model_selected.lower():
+            # ~800MB
+            model = Ollama(model="deepseek-coder")
 
     elif 'gpt' not in model_selected.lower():
         if 'gemma' in model_selected.lower():
