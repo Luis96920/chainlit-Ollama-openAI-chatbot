@@ -42,7 +42,6 @@ async def chat_profile():
 
     ]
 
-
 @cl.on_chat_start
 async def on_chatstart():
     
@@ -54,8 +53,15 @@ async def on_chatstart():
 
     model_selected = cl.user_session.get("chat_profile")
     
+    if 'gpt' in model_selected.lower():
+        vendor_name = "OpenAI"
+        apikey_html =  "https://platform.openai.com/api-keys"
+    else:
+        vendor_name = "Groq"
+        apikey_html = "https://console.groq.com/keys"
+
     await cl.Message(
-        content=f"To chat with the LLM **{model_selected}**, type your query in below textbox."
+        content=f"To chat with the LLM **{model_selected}**, type your query in below textbox. Please make sure you have proper **[{vendor_name}]({apikey_html})** API key set in .env file."
     ).send()
 
     # Setting up the LLM
@@ -68,7 +74,10 @@ async def on_chatstart():
             ("human", "{question}"),
         ]
     )
+
+    # Groq avaialble models: https://console.groq.com/settings/limits
     if 'gpt' not in model_selected.lower():
+        
         model = ChatGroq(temperature=0, model_name=model_selected)
 
         runnable = prompt | model | StrOutputParser()
@@ -79,6 +88,7 @@ async def on_chatstart():
     elif '-4' in model_selected.lower():
         model = ChatOpenAI(model="gpt-4-turbo", temperature=0)
     runnable = prompt | model | StrOutputParser()
+
     cl.user_session.set("runnable", runnable)
 
 
