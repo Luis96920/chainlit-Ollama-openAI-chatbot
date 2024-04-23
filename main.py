@@ -77,18 +77,16 @@ async def on_chatstart():
 
     # Groq avaialble models: https://console.groq.com/settings/limits
     if 'gpt' not in model_selected.lower():
-        
         model = ChatGroq(temperature=0, model_name=model_selected)
-
-        runnable = prompt | model | StrOutputParser()
-        cl.user_session.set("runnable", runnable)
+        # runnable = prompt | model | StrOutputParser()
+        # cl.user_session.set("runnable", runnable)
     elif '3.5' in model_selected.lower():
         # https://platform.openai.com/docs/models/overview
         model = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
     elif '-4' in model_selected.lower():
         model = ChatOpenAI(model="gpt-4-turbo", temperature=0)
+    
     runnable = prompt | model | StrOutputParser()
-
     cl.user_session.set("runnable", runnable)
 
 
