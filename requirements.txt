@@ -3,3 +3,6 @@ langchain
 chainlit
 langchain-openai
 openai
+langchain_community
+PyPDF2
+chromadb

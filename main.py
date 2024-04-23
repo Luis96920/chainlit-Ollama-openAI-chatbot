@@ -9,37 +9,52 @@ import chainlit as cl
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate # type: ignore
 from langchain_openai import ChatOpenAI # type: ignore
+from langchain_community.llms import Ollama
 
 @cl.set_chat_profiles
 async def chat_profile():
 
     return [
         cl.ChatProfile(
-            name="GPT-3.5",
-            markdown_description="The underlying LLM model is **GPT-3.5**.",
+            name="GPT-3.5 via OpenAI on remote",
+            markdown_description="The underlying large language model model is **GPT-3.5**.",
             # icon="https://picsum.photos/200",
         ),
         cl.ChatProfile(
-            name="GPT-4",
-            markdown_description="The underlying LLM model is **GPT-4**.",
+            name="GPT-4 via OpenAI on remote",
+            markdown_description="The underlying large language model model is **GPT-4**.",
             # icon="https://picsum.photos/250",
         ),
         cl.ChatProfile(
-            name="mixtral-8x7b-32768",
-            markdown_description="The underlying LLM model is **Mixtral-8x7b**.",
+            name="Mixtral-8x7b via Groq on remote",
+            markdown_description="The underlying large language model model is **Mixtral-8x7b**.",
             # icon="https://picsum.photos/200",
         ),
         cl.ChatProfile(
-            name="gemma-7b-it",
-            markdown_description="The underlying LLM model is **Gemma-7b**.",
+            name="Gemma-7b via Groq on remote",
+            markdown_description="The underlying large language model model is **Gemma-7b**.",
             # icon="https://picsum.photos/250",
         ),
         cl.ChatProfile(
-            name="llama3-8b-8192",
-            markdown_description="The underlying LLM model is **Llama3-8b**.",
+            name="Llama3-8b via Groq on remote",
+            markdown_description="The underlying large language model model is **Llama3-8b**.",
             # icon="https://picsum.photos/200",
         ),
-
+        cl.ChatProfile(
+            name="Llama3 via Ollama on local",
+            markdown_description="The underlying large language model model is **Llama3-8b quantization 4-bit**.",
+            # icon="https://picsum.photos/200",
+        ),
+        cl.ChatProfile(
+            name="Gemma via Ollama on local",
+            markdown_description="The underlying large language model model is **Gemma 9B quantization 4-bit**.",
+            # icon="https://picsum.photos/200",
+        ),
+        cl.ChatProfile(
+            name="CodeGemma via Ollama on local",
+            markdown_description="The underlying large language model model is **Gemma 9B** tuned for coding assistance with quantization 4-bit.",
+            # icon="https://picsum.photos/200",
+        ),
     ]
 
 @cl.on_chat_start
@@ -61,10 +76,10 @@ async def on_chatstart():
         apikey_html = "https://console.groq.com/keys"
 
     await cl.Message(
-        content=f"To chat with the LLM **{model_selected}**, type your query in below textbox. Please make sure you have proper **[{vendor_name}]({apikey_html})** API key set in .env file."
+        content=f"To chat with the large language model **{model_selected.split()[0]}** via {model_selected.split()[2]}, type your query in below textbox. Please make sure you have proper **[{vendor_name}]({apikey_html})** API key set in .env file."
     ).send()
 
-    # Setting up the LLM
+    # Setting up the large language model
     prompt = ChatPromptTemplate.from_messages(
         [
             (
@@ -76,8 +91,26 @@ async def on_chatstart():
     )
 
     # Groq avaialble models: https://console.groq.com/settings/limits
-    if 'gpt' not in model_selected.lower():
-        model = ChatGroq(temperature=0, model_name=model_selected)
+    if 'local' in model_selected.lower():
+        if 'llama3' in model_selected.lower():
+        # need to install ollama and 'ollama run llama3' -> 'pulling manifest': 4.7GB (https://ollama.com/library)
+            model = Ollama(model="llama3")
+        elif 'gemma' in model_selected.lower():
+            # 5.0GB
+            model = Ollama(model="gemma")
+        elif 'codegemma' in model_selected.lower():
+            # 5.0GB
+            model = Ollama(model="codegemma")
+
+    elif 'gpt' not in model_selected.lower():
+        if 'gemma' in model_selected.lower():
+            model = ChatGroq(temperature=0, model_name='gemma-7b-it')
+        elif 'mixtral' in model_selected.lower():
+            model = ChatGroq(temperature=0, model_name='mixtral-8x7b-32768')
+        elif 'llama' in model_selected.lower():
+            model = ChatGroq(temperature=0, model_name='llama3-8b-8192')
+        else:
+            print("model not found")
         # runnable = prompt | model | StrOutputParser()
         # cl.user_session.set("runnable", runnable)
     elif '3.5' in model_selected.lower():
