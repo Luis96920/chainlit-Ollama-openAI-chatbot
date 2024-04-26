@@ -11,6 +11,8 @@ from langchain_core.prompts import ChatPromptTemplate # type: ignore
 from langchain_openai import ChatOpenAI # type: ignore
 from langchain_community.llms import Ollama
 
+from langchain_google_vertexai import VertexAI
+
 @cl.set_chat_profiles
 async def chat_profile():
 
@@ -51,6 +53,11 @@ async def chat_profile():
             # icon="https://picsum.photos/200",
         ),
         cl.ChatProfile(
+            name="Phi-3 mini on local",
+            markdown_description="The underlying large language model model is **Phi-3 mini 4B quantization 4-bit**.",
+            # icon="https://picsum.photos/200",
+        ),
+        cl.ChatProfile(
             name="CodeGemma on local",
             markdown_description="The underlying large language model model is **Gemma 9B** tuned for coding assistance with quantization 4-bit.",
             # icon="https://picsum.photos/200",
@@ -73,6 +80,8 @@ async def on_chatstart():
 
     model_selected = cl.user_session.get("chat_profile")
     
+    gcp_project_ID = "aihub123-test1"
+
     if 'gpt' in model_selected.lower():
         vendor_name = "OpenAI"
         apikey_html =  "https://platform.openai.com/api-keys"
@@ -81,7 +90,7 @@ async def on_chatstart():
         apikey_html = "https://console.groq.com/keys"
 
     await cl.Message(
-        content=f"To chat with the large language model **{model_selected.split()[0]}** via {model_selected.split()[2]}, type your query in below textbox. Please make sure you have proper **[{vendor_name}]({apikey_html})** API key set in .env file or have conresponding binary file of models downloaded."
+        content=f"You are chatting with LLM **{model_selected.split()[0]}** via {model_selected.split()[2]}."
     ).send()
 
     # Setting up the large language model
@@ -106,6 +115,9 @@ async def on_chatstart():
         elif 'codegemma' in model_selected.lower():
             # 5.0GB
             model = Ollama(model="codegemma")
+        elif 'phi' in model_selected.lower():
+            # 5.0GB
+            model = Ollama(model="phi3")
         elif 'deepseek-coder' in model_selected.lower():
             # ~800MB
             model = Ollama(model="deepseek-coder")
