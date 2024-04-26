@@ -11,8 +11,6 @@ from langchain_core.prompts import ChatPromptTemplate # type: ignore
 from langchain_openai import ChatOpenAI # type: ignore
 from langchain_community.llms import Ollama
 
-from langchain_google_vertexai import VertexAI
-
 @cl.set_chat_profiles
 async def chat_profile():
 
