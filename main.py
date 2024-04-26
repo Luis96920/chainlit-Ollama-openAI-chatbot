@@ -107,7 +107,7 @@ async def on_chatstart():
     # Groq avaialble models: https://console.groq.com/settings/limits
     if 'local' in model_selected.lower():
         if 'llama3' in model_selected.lower():
-        # need to install ollama and 'ollama run llama3' -> 'pulling manifest': 4.7GB (https://ollama.com/library)
+            # 4.7GB (https://ollama.com/library)
             model = Ollama(model="llama3")
         elif 'gemma' in model_selected.lower():
             # 5.0GB
@@ -116,13 +116,12 @@ async def on_chatstart():
             # 5.0GB
             model = Ollama(model="codegemma")
         elif 'phi' in model_selected.lower():
-            # 5.0GB
+            # 2.3GB
             model = Ollama(model="phi3")
         elif 'deepseek-coder' in model_selected.lower():
             # ~800MB
             model = Ollama(model="deepseek-coder")
-
-    elif 'gpt' not in model_selected.lower():
+    elif 'gpt' not in model_selected.lower() and 'groq' in model_selected.lower():
         if 'gemma' in model_selected.lower():
             model = ChatGroq(temperature=0, model_name='gemma-7b-it')
         elif 'mixtral' in model_selected.lower():
@@ -131,18 +130,14 @@ async def on_chatstart():
             model = ChatGroq(temperature=0, model_name='llama3-8b-8192')
         else:
             print("model not found")
-        # runnable = prompt | model | StrOutputParser()
-        # cl.user_session.set("runnable", runnable)
-    elif '3.5' in model_selected.lower():
+    elif 'gpt' in model_selected.lower() and '3.5' in model_selected.lower():
         # https://platform.openai.com/docs/models/overview
         model = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
-    elif '-4' in model_selected.lower():
+    elif 'gpt' in model_selected.lower() and '-4' in model_selected.lower():
         model = ChatOpenAI(model="gpt-4-turbo", temperature=0)
     
     runnable = prompt | model | StrOutputParser()
     cl.user_session.set("runnable", runnable)
-
-
     
 @cl.on_message
 async def on_message(message: cl.Message):
