@@ -14,6 +14,7 @@ This is a pure experiment on langchain + chainlit + LLM  based chatbot!
 5. To use [Ollama](https://ollama.com/) wrapped [LLMs](https://ollama.com/library) on your own local computer, download and intall [Ollama](https://ollama.com/download) first and then in terminal run ```ollama pull <model-name>``` to pull the model you need. Currently the code in main.py has [Llama3](https://ollama.com/library/llama3), [Gemma](https://ollama.com/library/gemma), [Phi-3](https://ollama.com/library/phi3), [CodeGemma](https://ollama.com/library/codegemma) and [Deepseek-coder](https://ollama.com/library/deepseek-coder). So, please modify main.py accordingly based on your needs.
    
 **Run the main.py to luanch the chatbot**
+
 In terminal run the following commands
 1. ```conda activate <virtural env you created>```
 2. ```chainlit run main.py --watch```
