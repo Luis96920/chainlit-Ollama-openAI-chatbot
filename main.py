@@ -41,6 +41,11 @@ async def chat_profile():
             # icon="https://picsum.photos/200",
         ),
         cl.ChatProfile(
+            name="Llama3-70b on Groq remote",
+            markdown_description="The underlying large language model model is **Llama3-8b**.",
+            # icon="https://picsum.photos/200",
+        ),
+        cl.ChatProfile(
             name="Llama3 on local",
             markdown_description="The underlying large language model model is **Llama3-8b quantization 4-bit**.",
             # icon="https://picsum.photos/200",
@@ -124,8 +129,10 @@ async def on_chatstart():
             model = ChatGroq(temperature=0, model_name='gemma-7b-it')
         elif 'mixtral' in model_selected.lower():
             model = ChatGroq(temperature=0, model_name='mixtral-8x7b-32768')
-        elif 'llama' in model_selected.lower():
+        elif 'llama3-8b' in model_selected.lower():
             model = ChatGroq(temperature=0, model_name='llama3-8b-8192')
+        elif 'llama3-70b' in model_selected.lower():
+            model = ChatGroq(temperature=0, model_name='llama3-70b-8192')
         else:
             print("model not found")
     elif 'gpt' in model_selected.lower() and '3.5' in model_selected.lower():
@@ -141,6 +148,7 @@ async def on_chatstart():
 async def on_message(message: cl.Message):
     runnable = cl.user_session.get("runnable")  # type: Runnable
 
+
     msg = cl.Message(content="")
 
     async for chunk in runnable.astream(
@@ -148,5 +156,8 @@ async def on_message(message: cl.Message):
         config=RunnableConfig(callbacks=[cl.LangchainCallbackHandler()]),
     ):
         await msg.stream_token(chunk)
+    
+    print("--- The generative content from LLM:\n")
+    print(msg.content)
 
     await msg.send()
