@@ -90,7 +90,7 @@ async def on_chatstart():
             Slider(
                 id="Temperature",
                 label="LLM Temperature",
-                initial=0.3,
+                initial=0.1,
                 min=0,
                 max=1,
                 step=0.1,
