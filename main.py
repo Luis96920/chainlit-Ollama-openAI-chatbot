@@ -70,6 +70,12 @@ async def chat_profile():
             markdown_description="The underlying large language model model is **deepseek-coder 1B** for coding assistance with quantization 4-bit.",
             # icon="https://picsum.photos/200",
         ),
+        
+        cl.ChatProfile(
+            name="Wizard-math on local",
+            markdown_description="The underlying large language model model is **deepseek-coder 1B** for coding assistance with quantization 4-bit.",
+            # icon="https://picsum.photos/200",
+        ),
         cl.ChatProfile(
             name="Qwen on local",
             markdown_description="The underlying large language model model is **qwen 4B** wtih quantization 4-bit.",
@@ -136,6 +142,9 @@ async def on_chatstart():
         elif 'qwen' in model_selected.lower():
             # ~2.3GB
             model = Ollama(model="qwen", temperature=settings["Temperature"])
+        elif 'wizard-math' in model_selected.lower():
+            # ~4GB
+            model = Ollama(model="wizard-math", temperature=settings["Temperature"])
     elif 'gpt' not in model_selected.lower() and 'groq' in model_selected.lower():
         if 'gemma' in model_selected.lower():
             model = ChatGroq(temperature=settings["Temperature"], model_name='gemma-7b-it')
